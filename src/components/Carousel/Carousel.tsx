@@ -6,7 +6,13 @@ export interface CarouselInputItem {
   description: string;
 }
 
-function CarouselItem({ item, active }: { item: CarouselInputItem, active: boolean }) {
+function CarouselItem({
+  item,
+  active
+}: {
+  item: CarouselInputItem;
+  active: boolean;
+}) {
   return (
     <figure key={item.id} aria-current={active ? "true" : undefined}>
       <img src={item.imageURL} />
@@ -20,11 +26,19 @@ export interface CarouselProps {
   items: Array<CarouselInputItem>;
   activeItemIndex?: number;
 }
-export function Carousel({ label, items, activeItemIndex }: CarouselProps): JSX.Element {
+export function Carousel({
+  label,
+  items,
+  activeItemIndex
+}: CarouselProps): JSX.Element {
   return (
     <div role="region" aria-label={label}>
       {items.map((item, index) => (
-        <CarouselItem key={item.id} item={item} active={activeItemIndex === index} />
+        <CarouselItem
+          key={item.id}
+          item={item}
+          active={activeItemIndex === index}
+        />
       ))}
     </div>
   );
