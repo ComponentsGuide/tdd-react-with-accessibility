@@ -143,27 +143,27 @@ describe("<Carousel>", () => {
       };
     }
 
-    describe("when initialActiveIndex is…", () => {
+    describe("when initialIndex is…", () => {
       describe.each`
-        initialActiveIndex | expectedCurrentFigure | expectStyleRegex
-        ${undefined}       | ${0}                  | ${/left: 0px;/}
-        ${0}               | ${0}                  | ${/left: 0px;/}
-        ${1}               | ${1}                  | ${/left: -800px;/}
-        ${2}               | ${2}                  | ${/left: -1600px;/}
+        initialIndex | expectedCurrentFigure | expectStyleRegex
+        ${undefined} | ${0}                  | ${/left: 0px;/}
+        ${0}         | ${0}                  | ${/left: 0px;/}
+        ${1}         | ${1}                  | ${/left: -800px;/}
+        ${2}         | ${2}                  | ${/left: -1600px;/}
       `(
-        "set to $initialActiveIndex",
+        "set to $initialIndex",
         ({
-          initialActiveIndex,
+          initialIndex,
           expectedCurrentFigure,
           expectStyleRegex
         }: {
-          initialActiveIndex: number;
+          initialIndex: number;
           expectedCurrentFigure: number;
           expectStyleRegex: RegExp;
         }) => {
           let result: ReturnType<typeof subject>;
           beforeEach(() => {
-            props.initialActiveIndex = initialActiveIndex;
+            props.initialIndex = initialIndex;
             result = subject();
           });
 

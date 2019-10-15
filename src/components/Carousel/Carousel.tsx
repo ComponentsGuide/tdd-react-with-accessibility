@@ -26,11 +26,11 @@ function CarouselItem({
 
 interface CarouselItemsProps {
   items: Array<CarouselInputItem>;
-  activeItemIndex: number;
+  currentItemIndex: number;
 }
 function CarouselItems({
   items,
-  activeItemIndex
+  currentItemIndex: activeItemIndex
 }: CarouselItemsProps): JSX.Element {
   const style = useSpring({ left: activeItemIndex * -800 });
 
@@ -48,28 +48,28 @@ function CarouselItems({
 export interface CarouselProps {
   label: string;
   items: Array<CarouselInputItem>;
-  initialActiveIndex?: number;
+  initialIndex?: number;
 }
 export function Carousel({
   label,
   items,
-  initialActiveIndex = 0
+  initialIndex = 0
 }: CarouselProps): JSX.Element {
-  const [activeIndex, updateActiveIndex] = useState(initialActiveIndex);
+  const [currentIndex, updateCurrentIndex] = useState(initialIndex);
 
   return (
     <div role="region" aria-label={label} className={styles.component}>
-      <CarouselItems items={items} activeItemIndex={activeIndex} />
+      <CarouselItems items={items} currentItemIndex={currentIndex} />
       <button
         onClick={() => {
-          updateActiveIndex(index => (index - 1 + items.length) % items.length);
+          updateCurrentIndex(index => (index - 1 + items.length) % items.length);
         }}
       >
         Previous
       </button>
       <button
         onClick={() => {
-          updateActiveIndex(index => (index + 1) % items.length);
+          updateCurrentIndex(index => (index + 1) % items.length);
         }}
       >
         Next
