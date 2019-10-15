@@ -105,79 +105,133 @@ describe("<Carousel>", () => {
         "https://images.unsplash.com/2"
       );
     });
+  });
 
-    describe("active index", () => {
+  describe("three items", () => {
+    beforeEach(() => {
+      props.items = [
+        {
+          id: "a",
+          description: "first description",
+          imageURL: "https://images.unsplash.com/1"
+        },
+        {
+          id: "b",
+          description: "second description",
+          imageURL: "https://images.unsplash.com/2"
+        },
+        {
+          id: "c",
+          description: "third description",
+          imageURL: "https://images.unsplash.com/c"
+        }
+      ];
+    });
+    function subject() {
+      const result = render(<Carousel {...props} />);
+      const figures = result.getAllByRole("figure");
+      const previousButton = result.getByText(/previous/i);
+      const nextButton = result.getByText(/next/i);
+      return {
+        ...result,
+        figures,
+        previousButton,
+        nextButton,
+        countAriaCurrent() {
+          return result.container.querySelectorAll("[aria-current]").length;
+        }
+      };
+    }
+
+    describe("current item", () => {
       describe("initially", () => {
-        let figures: Array<HTMLElement>;
+        let result: ReturnType<typeof subject>;
         beforeEach(() => {
-          const { getAllByRole } = subject();
-          figures = getAllByRole("figure");
+          result = subject();
         });
 
         describe("first figure", () => {
           it("is current", () => {
-            expect(figures[0]).toHaveAttribute("aria-current", "true");
+            const [firstFigure] = result.figures;
+            expect(firstFigure).toHaveAttribute("aria-current");
           });
         });
+
+        it("has only one current element", () => {
+          expect(result.countAriaCurrent()).toEqual(1);
+        });
+      });
+
+      describe("when previous button is…", () => {
+        describe.each`
+        times | expectedIndex
+        ${1} | ${2}
+        ${2} | ${1}
+        ${3} | ${0}
+        ${4} | ${2}
+        `("clicked $times time(s)", ({ times, expectedIndex }: { times: number; expectedIndex: number }) => {
+          let result: ReturnType<typeof subject>;
+          beforeEach(() => {
+            result = subject();
+            for (let i = 1; i <= times; i++) {
+              fireEvent.click(result.previousButton);
+            }
+          });
+
+          describe(`figure at index ${expectedIndex}`, () => {
+            it("is current", () => {
+              expect(result.figures[expectedIndex]).toHaveAttribute("aria-current", "true");
+            });
+          });
   
-        describe("second figure", () => {
-          it("is not current", () => {
-            expect(figures[1]).not.toHaveAttribute("aria-current");
+          it("has only one current element", () => {
+            expect(result.countAriaCurrent()).toEqual(1);
           });
         });
       });
 
-      describe("when next button is pressed", () => {
-        let nextButton: HTMLElement;
-        let figures: Array<HTMLElement>;
-        beforeEach(() => {
-          const { getAllByRole, getByText } = subject();
-          nextButton = getByText(/next/i);
-          figures = getAllByRole("figure");
-
-          fireEvent.click(nextButton);
-        });
-
-        describe("second figure", () => {
-          it("is current", () => {
-            expect(figures[1]).toHaveAttribute("aria-current", "true");
-          });
-        });
-
-        describe("when next button is pressed again", () => {
+      describe("when next button is…", () => {
+        describe.each`
+        times | expectedIndex
+        ${1} | ${1}
+        ${2} | ${2}
+        ${3} | ${0}
+        ${4} | ${1}
+        `("clicked $times time(s)", ({ times, expectedIndex }: { times: number; expectedIndex: number }) => {
+          let result: ReturnType<typeof subject>;
           beforeEach(() => {
-            fireEvent.click(nextButton);
+            result = subject();
+            for (let i = 1; i <= times; i++) {
+              fireEvent.click(result.nextButton);
+            }
           });
 
-          describe("first figure", () => {
+          describe(`figure at index ${expectedIndex}`, () => {
             it("is current", () => {
-              expect(figures[0]).toHaveAttribute("aria-current", "true");
+              expect(result.figures[expectedIndex]).toHaveAttribute("aria-current", "true");
             });
+          });
+  
+          it("has only one current element", () => {
+            expect(result.countAriaCurrent()).toEqual(1);
           });
         });
       });
 
       describe("when second item (index 1) is initially active", () => {
-        let figures: Array<HTMLElement>;
+        let result: ReturnType<typeof subject>;
         beforeEach(() => {
           props.initialActiveIndex = 1;
-  
-          const { getAllByRole } = subject();
-          figures = getAllByRole("figure");
+          result = subject();
         });
-  
-        describe("first figure", () => {
-          it("is not current", () => {
-            expect(figures[0]).not.toHaveAttribute("aria-current");
-          });
-        });
-  
+
         describe("second figure", () => {
           it("is current", () => {
-            expect(figures[1]).toHaveAttribute("aria-current", "true");
+            const [, secondFigure] = result.figures;
+            expect(secondFigure).toHaveAttribute("aria-current", "true");
           });
         });
       });
-    })
+    });
   });
 });

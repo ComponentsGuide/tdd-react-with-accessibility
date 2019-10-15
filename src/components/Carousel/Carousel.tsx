@@ -57,7 +57,13 @@ export function Carousel({
   return (
     <div role="region" aria-label={label}>
       <CarouselItems items={items} activeItemIndex={activeIndex} />
-      <button onClick={() => {}}>Previous</button>
+      <button
+        onClick={() => {
+          updateActiveIndex(index => (index - 1 + items.length) % items.length);
+        }}
+      >
+        Previous
+      </button>
       <button
         onClick={() => {
           updateActiveIndex(index => (index + 1) % items.length);
