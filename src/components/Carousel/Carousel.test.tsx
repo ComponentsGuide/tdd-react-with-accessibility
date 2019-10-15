@@ -143,33 +143,72 @@ describe("<Carousel>", () => {
       };
     }
 
-    describe("current item", () => {
-      describe("initially", () => {
-        let result: ReturnType<typeof subject>;
-        beforeEach(() => {
-          result = subject();
-        });
-
-        describe("first figure", () => {
-          it("is current", () => {
-            const [firstFigure] = result.figures;
-            expect(firstFigure).toHaveAttribute("aria-current");
+    describe("when initialActiveIndex is…", () => {
+      describe.each`
+        initialActiveIndex | expectedCurrentFigure | expectStyleRegex
+        ${undefined}       | ${0}                  | ${/left: 0px;/}
+        ${0}               | ${0}                  | ${/left: 0px;/}
+        ${1}               | ${1}                  | ${/left: -800px;/}
+        ${2}               | ${2}                  | ${/left: -1600px;/}
+      `(
+        "set to $initialActiveIndex",
+        ({
+          initialActiveIndex,
+          expectedCurrentFigure,
+          expectStyleRegex
+        }: {
+          initialActiveIndex: number;
+          expectedCurrentFigure: number;
+          expectStyleRegex: RegExp;
+        }) => {
+          let result: ReturnType<typeof subject>;
+          beforeEach(() => {
+            props.initialActiveIndex = initialActiveIndex;
+            result = subject();
           });
-        });
 
-        it("has only one current element", () => {
-          expect(result.countAriaCurrent()).toEqual(1);
-        });
-      });
+          describe(`figure at index ${expectedCurrentFigure}`, () => {
+            it("is current", () => {
+              expect(result.figures[expectedCurrentFigure]).toHaveAttribute(
+                "aria-current",
+                "true"
+              );
+            });
+          });
 
-      describe("when previous button is…", () => {
-        describe.each`
+          it("has only one current element", () => {
+            expect(result.countAriaCurrent()).toEqual(1);
+          });
+
+          describe("list", () => {
+            it(`has left offset of ${expectStyleRegex}`, () => {
+              const listEl = result.getByRole("list");
+              expect(listEl).toHaveAttribute(
+                "style",
+                expect.stringMatching(expectStyleRegex)
+              );
+            });
+          });
+        }
+      );
+    });
+
+    describe("when previous button is…", () => {
+      describe.each`
         times | expectedIndex
-        ${1} | ${2}
-        ${2} | ${1}
-        ${3} | ${0}
-        ${4} | ${2}
-        `("clicked $times time(s)", ({ times, expectedIndex }: { times: number; expectedIndex: number }) => {
+        ${1}  | ${2}
+        ${2}  | ${1}
+        ${3}  | ${0}
+        ${4}  | ${2}
+      `(
+        "clicked $times time(s)",
+        ({
+          times,
+          expectedIndex
+        }: {
+          times: number;
+          expectedIndex: number;
+        }) => {
           let result: ReturnType<typeof subject>;
           beforeEach(() => {
             result = subject();
@@ -180,24 +219,36 @@ describe("<Carousel>", () => {
 
           describe(`figure at index ${expectedIndex}`, () => {
             it("is current", () => {
-              expect(result.figures[expectedIndex]).toHaveAttribute("aria-current", "true");
+              expect(result.figures[expectedIndex]).toHaveAttribute(
+                "aria-current",
+                "true"
+              );
             });
           });
-  
+
           it("has only one current element", () => {
             expect(result.countAriaCurrent()).toEqual(1);
           });
-        });
-      });
+        }
+      );
+    });
 
-      describe("when next button is…", () => {
-        describe.each`
+    describe("when next button is…", () => {
+      describe.each`
         times | expectedIndex
-        ${1} | ${1}
-        ${2} | ${2}
-        ${3} | ${0}
-        ${4} | ${1}
-        `("clicked $times time(s)", ({ times, expectedIndex }: { times: number; expectedIndex: number }) => {
+        ${1}  | ${1}
+        ${2}  | ${2}
+        ${3}  | ${0}
+        ${4}  | ${1}
+      `(
+        "clicked $times time(s)",
+        ({
+          times,
+          expectedIndex
+        }: {
+          times: number;
+          expectedIndex: number;
+        }) => {
           let result: ReturnType<typeof subject>;
           beforeEach(() => {
             result = subject();
@@ -208,30 +259,18 @@ describe("<Carousel>", () => {
 
           describe(`figure at index ${expectedIndex}`, () => {
             it("is current", () => {
-              expect(result.figures[expectedIndex]).toHaveAttribute("aria-current", "true");
+              expect(result.figures[expectedIndex]).toHaveAttribute(
+                "aria-current",
+                "true"
+              );
             });
           });
-  
+
           it("has only one current element", () => {
             expect(result.countAriaCurrent()).toEqual(1);
           });
-        });
-      });
-
-      describe("when second item (index 1) is initially active", () => {
-        let result: ReturnType<typeof subject>;
-        beforeEach(() => {
-          props.initialActiveIndex = 1;
-          result = subject();
-        });
-
-        describe("second figure", () => {
-          it("is current", () => {
-            const [, secondFigure] = result.figures;
-            expect(secondFigure).toHaveAttribute("aria-current", "true");
-          });
-        });
-      });
+        }
+      );
     });
   });
 });

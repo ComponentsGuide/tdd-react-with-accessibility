@@ -1,0 +1,19 @@
+.component {
+  overflow: hidden;
+  width: 800px;
+
+  ol {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+
+    position: relative;
+    display: flex;
+    flex-wrap: nowrap;
+  }
+
+  figure {
+    margin: 0;
+    padding: 0;
+  }
+}

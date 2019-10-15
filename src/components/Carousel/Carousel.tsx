@@ -1,4 +1,7 @@
 import React, { useState } from "react";
+import { useSpring, animated } from "react-spring";
+
+import styles from "./Carousel.module.scss";
 
 export interface CarouselInputItem {
   id: string;
@@ -23,22 +26,22 @@ function CarouselItem({
 
 interface CarouselItemsProps {
   items: Array<CarouselInputItem>;
-  activeItemIndex?: number;
+  activeItemIndex: number;
 }
 function CarouselItems({
   items,
   activeItemIndex
 }: CarouselItemsProps): JSX.Element {
+  const style = useSpring({ left: activeItemIndex * -800 });
+
   return (
-    <div>
+    <animated.ol style={style}>
       {items.map((item, index) => (
-        <CarouselItem
-          key={item.id}
-          item={item}
-          active={activeItemIndex === index}
-        />
+        <li key={item.id}>
+          <CarouselItem item={item} active={activeItemIndex === index} />
+        </li>
       ))}
-    </div>
+    </animated.ol>
   );
 }
 
@@ -55,7 +58,7 @@ export function Carousel({
   const [activeIndex, updateActiveIndex] = useState(initialActiveIndex);
 
   return (
-    <div role="region" aria-label={label}>
+    <div role="region" aria-label={label} className={styles.component}>
       <CarouselItems items={items} activeItemIndex={activeIndex} />
       <button
         onClick={() => {
