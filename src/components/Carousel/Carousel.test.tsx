@@ -102,5 +102,27 @@ describe("<Carousel>", () => {
         "https://images.unsplash.com/2"
       );
     });
+
+    describe("when second item (index 1) is active", () => {
+      let figures: Array<HTMLElement>;
+      beforeEach(() => {
+        props.activeItemIndex = 1;
+
+        const { getAllByRole } = subject();
+        figures = getAllByRole("figure");
+      });
+
+      describe("first figure", () => {
+        it("is not current", () => {
+          expect(figures[0]).not.toHaveAttribute("aria-current");
+        });
+      });
+
+      describe("second figure", () => {
+        it("is current", () => {
+          expect(figures[1]).toHaveAttribute("aria-current", "true");
+        });
+      });
+    });
   });
 });
