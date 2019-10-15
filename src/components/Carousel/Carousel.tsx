@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState } from "react";
 
 export interface CarouselInputItem {
   id: string;
@@ -50,11 +50,13 @@ export interface CarouselProps {
 export function Carousel({
   label,
   items,
-  initialActiveIndex
+  initialActiveIndex = 0
 }: CarouselProps): JSX.Element {
+  const [activeIndex, updateActiveIndex] = useState(initialActiveIndex);
+
   return (
     <div role="region" aria-label={label}>
-      <CarouselItems items={items} activeItemIndex={initialActiveIndex} />
+      <CarouselItems items={items} activeItemIndex={activeIndex} />
     </div>
   );
 }

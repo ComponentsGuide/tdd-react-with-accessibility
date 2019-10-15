@@ -111,26 +111,48 @@ describe("<Carousel>", () => {
       );
     });
 
-    describe("when second item (index 1) is active", () => {
-      let figures: Array<HTMLElement>;
-      beforeEach(() => {
-        props.initialActiveIndex = 1;
+    describe("active index", () => {
+      describe("initially", () => {
+        let figures: Array<HTMLElement>;
+        beforeEach(() => {
+          const { getAllByRole } = subject();
+          figures = getAllByRole("figure");
+        });
 
-        const { getAllByRole } = subject();
-        figures = getAllByRole("figure");
-      });
+        describe("first figure", () => {
+          it("is current", () => {
+            expect(figures[0]).toHaveAttribute("aria-current", "true");
+          });
+        });
+  
+        describe("second figure", () => {
+          it("is not current", () => {
+            expect(figures[1]).not.toHaveAttribute("aria-current");
+          });
+        });
+      })
 
-      describe("first figure", () => {
-        it("is not current", () => {
-          expect(figures[0]).not.toHaveAttribute("aria-current");
+      describe("when second item (index 1) is active", () => {
+        let figures: Array<HTMLElement>;
+        beforeEach(() => {
+          props.initialActiveIndex = 1;
+  
+          const { getAllByRole } = subject();
+          figures = getAllByRole("figure");
+        });
+  
+        describe("first figure", () => {
+          it("is not current", () => {
+            expect(figures[0]).not.toHaveAttribute("aria-current");
+          });
+        });
+  
+        describe("second figure", () => {
+          it("is current", () => {
+            expect(figures[1]).toHaveAttribute("aria-current", "true");
+          });
         });
       });
-
-      describe("second figure", () => {
-        it("is current", () => {
-          expect(figures[1]).toHaveAttribute("aria-current", "true");
-        });
-      });
-    });
+    })
   });
 });
