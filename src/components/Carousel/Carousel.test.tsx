@@ -1,7 +1,7 @@
 import { Carousel, CarouselProps } from "./Carousel";
 
 import React from "react";
-import { render, cleanup } from "@testing-library/react";
+import { render, cleanup, fireEvent } from "@testing-library/react";
 import "@testing-library/jest-dom/extend-expect";
 
 describe("<Carousel>", () => {
@@ -18,11 +18,6 @@ describe("<Carousel>", () => {
   afterEach(cleanup);
 
   describe("empty items", () => {
-    it("has empty text content", () => {
-      const result = subject();
-      expect(result.container).toHaveTextContent("");
-    });
-
     it("has one region", () => {
       const { getAllByRole } = subject();
       expect(getAllByRole("region")).toHaveLength(1);
@@ -130,9 +125,39 @@ describe("<Carousel>", () => {
             expect(figures[1]).not.toHaveAttribute("aria-current");
           });
         });
-      })
+      });
 
-      describe("when second item (index 1) is active", () => {
+      describe("when next button is pressed", () => {
+        let nextButton: HTMLElement;
+        let figures: Array<HTMLElement>;
+        beforeEach(() => {
+          const { getAllByRole, getByText } = subject();
+          nextButton = getByText(/next/i);
+          figures = getAllByRole("figure");
+
+          fireEvent.click(nextButton);
+        });
+
+        describe("second figure", () => {
+          it("is current", () => {
+            expect(figures[1]).toHaveAttribute("aria-current", "true");
+          });
+        });
+
+        describe("when next button is pressed again", () => {
+          beforeEach(() => {
+            fireEvent.click(nextButton);
+          });
+
+          describe("first figure", () => {
+            it("is current", () => {
+              expect(figures[0]).toHaveAttribute("aria-current", "true");
+            });
+          });
+        });
+      });
+
+      describe("when second item (index 1) is initially active", () => {
         let figures: Array<HTMLElement>;
         beforeEach(() => {
           props.initialActiveIndex = 1;
