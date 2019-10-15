@@ -114,7 +114,7 @@ describe("<Carousel>", () => {
     describe("when second item (index 1) is active", () => {
       let figures: Array<HTMLElement>;
       beforeEach(() => {
-        props.activeItemIndex = 1;
+        props.initialActiveIndex = 1;
 
         const { getAllByRole } = subject();
         figures = getAllByRole("figure");
