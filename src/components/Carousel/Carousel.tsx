@@ -16,12 +16,13 @@ function CarouselItem({ item, active }: { item: CarouselInputItem, active: boole
 }
 
 export interface CarouselProps {
+  label: string;
   items: Array<CarouselInputItem>;
   activeItemIndex?: number;
 }
-export function Carousel({ items, activeItemIndex }: CarouselProps): JSX.Element {
+export function Carousel({ label, items, activeItemIndex }: CarouselProps): JSX.Element {
   return (
-    <div role="region" aria-label="Gallery">
+    <div role="region" aria-label={label}>
       {items.map((item, index) => (
         <CarouselItem key={item.id} item={item} active={activeItemIndex === index} />
       ))}

@@ -7,7 +7,10 @@ import "@testing-library/jest-dom/extend-expect";
 describe("<Carousel>", () => {
   let props: CarouselProps;
   beforeEach(() => {
-    props = { items: [] };
+    props = {
+      label: "carousel label",
+      items: []
+    };
   });
   function subject() {
     return render(<Carousel {...props} />);
@@ -23,6 +26,11 @@ describe("<Carousel>", () => {
     it("has one region", () => {
       const { getAllByRole } = subject();
       expect(getAllByRole("region")).toHaveLength(1);
+    });
+
+    it("shows label 'carousel label'", () => {
+      const { getByLabelText } = subject();
+      expect(getByLabelText("carousel label")).toBeInTheDocument();
     });
   });
 
